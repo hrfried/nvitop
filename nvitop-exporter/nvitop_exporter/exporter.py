@@ -601,6 +601,7 @@ class PrometheusExporter:  # pylint: disable=too-many-instance-attributes
             for pid, process in device.processes().items():
                 with process.oneshot():
                     username = process.username()
+                    command = process.command()
                     if (pid, username) not in host_snapshots:  # noqa: SIM401,RUF100
                         host_snapshot = host_snapshots[pid, username] = process.host_snapshot()
                     else:
