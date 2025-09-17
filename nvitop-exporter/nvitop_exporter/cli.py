@@ -119,7 +119,7 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     args = parser.parse_args()
-    if args.interval < 0.25:
+    if args.interval < 0.05:
         parser.error(
             f'the interval {args.interval:0.2g}s is too short, which may cause performance issues. '
             f'Expected 1/4 or higher.',

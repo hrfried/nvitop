@@ -602,10 +602,10 @@ class PrometheusExporter:  # pylint: disable=too-many-instance-attributes
                 with process.oneshot():
                     username = process.username()
                     command = process.command()
-                    if (pid, username) not in host_snapshots:  # noqa: SIM401,RUF100
-                        host_snapshot = host_snapshots[pid, username] = process.host_snapshot()
+                    if (pid, username, command) not in host_snapshots:  # noqa: SIM401,RUF100
+                        host_snapshot = host_snapshots[pid, username, command] = process.host_snapshot()
                     else:
-                        host_snapshot = host_snapshots[pid, username]
+                        host_snapshot = host_snapshots[pid, username, command]
                     self.process_info.labels(
                         hostname=self.hostname,
                         index=index,
@@ -613,7 +613,7 @@ class PrometheusExporter:  # pylint: disable=too-many-instance-attributes
                         uuid=uuid,
                         pid=pid,
                         username=username,
-                        command=host_snapshot.command,
+                        command=command,
                     ).info(
                         {
                             'status': host_snapshot.status,
@@ -656,11 +656,11 @@ class PrometheusExporter:  # pylint: disable=too-many-instance-attributes
                             uuid=uuid,
                             pid=pid,
                             username=username,
-                            command=host_snapshot.command,
+                            command=command,
                         ).set(value)
 
         alive_pids.update(host_snapshots)
-        for pid, username in previous_alive_pids.difference(alive_pids):
+        for pid, username, command in previous_alive_pids.difference(alive_pids):
             for collector in (
                 self.process_info,
                 self.process_running_time,
